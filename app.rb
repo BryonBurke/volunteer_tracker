@@ -3,23 +3,17 @@ require('sinatra/reloader')
 require('./lib/project')
 require('./lib/volunteer')
 require('pry')
+require('pg')
 also_reload('lib/**/*.rb')
 
 get('/') do
-  redirect to('/projects')
+  redirect to('/home')
 end
 
-get('/projects') do
-  @projects = Project.sort
-  @projects_sold = Project.all_sold
+get('/home') do
   erb(:projects)
 end
 
-get('/projects/search') do
-  user_search = params[:search]
-  @search = Project.search(user_search)
-  erb(:search)
-end
 
 get ('/projects/new') do
   erb(:new_project)
@@ -79,4 +73,11 @@ delete ('/projects/:id/volunteers/:volunteer_id') do
   volunteer.delete
   @project = Project.find(params[:id].to_i())
   erb(:project)
+end
+
+
+get('/projects/search') do
+  user_search = params[:search]
+  @search = Project.search(user_search)
+  erb(:search)
 end
