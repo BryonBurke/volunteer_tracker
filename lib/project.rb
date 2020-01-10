@@ -54,10 +54,4 @@ class Project
     Project.new({:name => name, :id => id})
   end
 
-
-
-
-
-
-
 end
