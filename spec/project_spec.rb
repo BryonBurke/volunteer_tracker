@@ -10,5 +10,15 @@ describe('.#Project') do
     end
   end
 
+  describe('#save') do
+    it("saves a project") do
+      project = Project.new({:name => "Clean up park", :id => nil}) # nil added as second argument
+      project.save()
+      project2 = Project.new({:name => "Collect for food drive", :id => nil}) # nil added as second argument
+      project2.save()
+      expect(Project.all).to(eq([project, project2]))
+    end
+  end
+
 
 end
