@@ -1,5 +1,5 @@
 class Project
-  attr_accessor :title, :id
+  attr_accessor :id, :title
 
   # create a project
   def initialize(attributes)
