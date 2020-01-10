@@ -30,6 +30,34 @@ class Project
     projects
   end
 
+  # update a project
+  def update(name)
+    @name = name
+    DB.exec("UPDATE projects SET name = '#{@name}' WHERE id = #{@id};")
+  end
+
+  #delete a project
+  def delete
+    DB.exec("DELETE FROM projects WHERE id = #{@id};")
+  end
+
+  #clear city database
+  def self.clear
+    DB.exec("DELETE FROM projects *;")
+  end
+
+  # find a project by id
+  def self.find(id)
+    project = DB.exec("SELECT * FROM projects WHERE id = #{id};").first
+    name = project.fetch("name")
+    id = project.fetch("id").to_i
+    Project.new({:name => name, :id => id})
+  end
+
+
+
+
+
 
 
 end
