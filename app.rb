@@ -7,11 +7,19 @@ require('pg')
 also_reload('lib/**/*.rb')
 
 get('/') do
-  redirect to('/home')
+  redirect to('/projects')
 end
 
-get('/home') do
+get('/projects') do
+  @projects = Project.sort
+  @projects_sold = Project.all_sold
   erb(:projects)
+end
+
+get('/projects/search') do
+  user_search = params[:search]
+  @search = Project.search(user_search)
+  erb(:search)
 end
 
 
@@ -42,7 +50,12 @@ patch ('/projects/:id') do
   redirect to('/projects')
 end
 
+get ('/projects/:id/buy') do
 
+    @project = Project.find(params[:id].to_i())
+    @project.sold
+    redirect to('/projects')
+end
 delete ('/projects/:id') do
   @project = Project.find(params[:id].to_i())
   @project.delete()
@@ -73,11 +86,4 @@ delete ('/projects/:id/volunteers/:volunteer_id') do
   volunteer.delete
   @project = Project.find(params[:id].to_i())
   erb(:project)
-end
-
-
-get('/projects/search') do
-  user_search = params[:search]
-  @search = Project.search(user_search)
-  erb(:search)
 end
