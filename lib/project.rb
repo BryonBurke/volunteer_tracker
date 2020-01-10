@@ -1,20 +1,20 @@
 class Project
-  attr_accessor :title, :id
+  attr_accessor :name, :id
 
   # create a project
   def initialize(attributes)
-    @title = attributes.fetch(:title) || nil
+    @name = attributes.fetch(:name) || nil
     @id = attributes.fetch(:id, nil)
   end
 
-  # ensure two projects are the same if they have the same  title
+  # ensure two projects are the same if they have the same  name
   def ==(project_to_compare)
-    self.title() == project_to_compare.title()
+    self.name() == project_to_compare.name()
   end
 
   # save a project
   def save
-    result = DB.exec("INSERT INTO projects ( title) VALUES ('#{@title}') RETURNING id;")
+    result = DB.exec("INSERT INTO projects (name) VALUES ('#{@name}') RETURNING id;")
     @id = result.first().fetch("id").to_i
   end
 
@@ -22,7 +22,7 @@ class Project
     sorted_array = []
 
     self.all.each do |a|
-      sorted_array.push(a.title)
+      sorted_array.push(a.name)
     end
     results = sorted_array.sort.map { |a|  self.search(a)[0] }
   end
@@ -32,17 +32,17 @@ class Project
     returned_projects = DB.exec('SELECT * FROM projects;')
     projects = []
     returned_projects.each() do |project|
-      title = project.fetch('title')
+      name = project.fetch('name')
       id = project.fetch('id').to_i
-      projects.push(Project.new({:title =>title, :id => id}))
+      projects.push(Project.new({:name => name, :id => id}))
     end
     projects
   end
 
   # update a project
-  def update(title)
-    @title = title
-    DB.exec("UPDATE projects SET  title = '#{@title}' WHERE id = #{@id};")
+  def update(name)
+    @name = name
+    DB.exec("UPDATE projects SET name = '#{@name}' WHERE id = #{@id};")
   end
 
   #delete a project
@@ -58,9 +58,9 @@ class Project
   # find a project by id
   def self.find(id)
     project = DB.exec("SELECT * FROM projects WHERE id = #{id};").first
-    title = project.fetch("title")
+    name = project.fetch("name")
     id = project.fetch("id").to_i
-    Project.new({:title => title, :id => id})
+    Project.new({:name =>name, :id => id})
   end
 
 end
