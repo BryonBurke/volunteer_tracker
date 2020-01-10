@@ -1,0 +1,16 @@
+<h1>Welcome to volunteer tracker</h1><br><br>
+
+<h2>These are the current projects. Click on one to see the volunteers assigned to the project</h2><br>
+
+<% if @projects.any? %>
+  <ul>
+    <% @projects.each do |project| %>
+      <li><a href="/projects/<%= project.id %>"><%= project.name %></a></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>There are currently no projects to display.</p>
+<% end %>
+<form class="" action="/projects/new" method="get">
+  <button type="submit" name="button">Add a new project</button>
+</form>
