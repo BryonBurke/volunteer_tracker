@@ -15,3 +15,19 @@ end
 get('/home') do
   erb(:home)
 end
+
+get('/home/admin')do
+  @projects = Project.all
+  erb(:admin)
+end
+
+post('/home/admin/projects') do
+  project = Project.new(params)
+  project.save
+  @projects = Project.all
+  erb(:admin)
+end
+
+get('/home/admin/projects/new') do
+  erb(:add_project)
+end

@@ -1,57 +1,57 @@
-class Volunteer
-  attr_accessor :name, :id
+require "spec_helper"
 
-  # create a volunteer
-  def initialize(attributes)
-    @name = attributes.fetch(:name) || nil
-    @id = attributes.fetch(:id, nil)
-  end
-
-  # ensure two volunteers are the same if they have the same name
-  def ==(volunteer_to_compare)
-    self.name() == volunteer_to_compare.name()
-  end
-
-  # save a volunteer
-  def save
-    result = DB.exec("INSERT INTO volunteers (name) VALUES ('#{@name}') RETURNING id;")
-    @id = result.first().fetch("id").to_i
-  end
-
-  # read all volunteers
-  def self.all
-    returned_volunteers = DB.exec('SELECT * FROM volunteers;')
-    volunteers = []
-    returned_volunteers.each() do |volunteer|
-      name = volunteer.fetch('name')
-      id = volunteer.fetch('id').to_i
-      volunteers.push(Volunteer.new({:name => name, :id => id}))
+describe Volunteer do
+    describe '#name' do
+      it 'returns the name of the volunteer' do
+        test_volunteer = Volunteer.new({:name => 'Jane', :project_id => 1, :id => nil})
+        expect(test_volunteer.name).to eq 'Jane'
+      end
     end
-    volunteers
-  end
 
-  # update a volunteer
-  def update(name)
-    @name = name
-    DB.exec("UPDATE volunteers SET name = '#{@name}' WHERE id = #{@id};")
-  end
+    describe '#project_id' do
+      it 'returns the project_id of the volunteer' do
+        test_volunteer = Volunteer.new({:name => 'Jane', :project_id => 1, :id => nil})
+        expect(test_volunteer.project_id).to eq 1
+      end
+    end
 
-  #delete a volunteer
-  def delete
-    DB.exec("DELETE FROM volunteers WHERE id = #{@id};")
-  end
+    describe '#==' do
+      it 'checks for equality based on the name of a volunteer' do
+        volunteer1 = Volunteer.new({:name => 'Jane', :project_id => 1, :id => nil})
+        volunteer2 = Volunteer.new({:name => 'Jane', :project_id => 1, :id => nil})
+        expect(volunteer1 == volunteer2).to eq true
+      end
+    end
 
-  #clear city database
-  def self.clear
-    DB.exec("DELETE FROM volunteers *;")
-  end
+    context '.all' do
+      it 'is empty to start' do
+        expect(Volunteer.all).to eq []
+      end
 
-  # find a volunteer by id
-  def self.find(id)
-    volunteer = DB.exec("SELECT * FROM volunteers WHERE id = #{id};").first
-    name = volunteer.fetch("name")
-    id = volunteer.fetch("id").to_i
-    Volunteer.new({:name => name, :id => id})
-  end
+      it 'returns all volunteers' do
+        volunteer1 = Volunteer.new({:name => 'Jane', :project_id => 1, :id => nil})
+        volunteer1.save
+        volunteer2 = Volunteer.new({:name => 'Joe', :project_id => 1, :id => nil})
+        volunteer2.save
+        expect(Volunteer.all).to eq [volunteer1, volunteer2]
+      end
+    end
 
+    describe '#save' do
+      it 'adds a volunteer to the database' do
+        volunteer1 = Volunteer.new({:name => 'Jane', :project_id => 1, :id => nil})
+        volunteer1.save
+        expect(Volunteer.all).to eq [volunteer1]
+      end
+    end
+
+    describe '.find' do
+      it 'returns a volunteer by id' do
+        volunteer1 = Volunteer.new({:name => 'Jane', :project_id => 1, :id => nil})
+        volunteer1.save
+        volunteer2 = Volunteer.new({:name => 'Joe', :project_id => 1, :id => nil})
+        volunteer2.save
+        expect(Volunteer.find(volunteer1.id)).to eq volunteer1
+      end
+    end
 end
