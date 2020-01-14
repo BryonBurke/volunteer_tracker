@@ -2,7 +2,7 @@
 <% if @projects.any? %>
 <ul>
   <% @projects.each do |project| %>
-    <li><a href="/home/admin/projects/<%= project.id %>"><%= project.name %></a></li>
+    <li><a href="/home/admin/projects/<%= project.id %>"><%= project.title %></a></li>
   <% end %>
 </ul>
 <% else %>

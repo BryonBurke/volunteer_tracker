@@ -28,6 +28,22 @@ post('/home/admin/projects') do
   erb(:admin)
 end
 
-get('/home/admin/projects/new') do
+get('/home/admin/projects/id') do
+  erb(:add_project)
+end
+
+get('/home/admin/projects/:id') do
+  @project = Project.find(params[:id].to_i)
+  erb(:project)
+end
+
+
+
+get ('/projects/:id/volunteers/:volunteer_id') do
+  @volunteer = Project.find(params[:volunteer_id].to_i())
+  erb(:volunteer)
+end
+
+get('/home/admin/projects/id') do
   erb(:add_project)
 end
